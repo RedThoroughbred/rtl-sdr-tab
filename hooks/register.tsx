@@ -1,4 +1,5 @@
 import type { Register } from 'claude-code'
+import { parseJob, parsePlanes, parseScan, parseTune, registerTools } from './tools'
 import type { StripGrid, StripMessage, StripPeak, StripProps } from './tuning-strip'
 
 // The Radio tab: an RTL-SDR Blog V4 on the Mac's USB, driven through
@@ -4765,10 +4766,246 @@ SECTIONS.push(scannerSection, recordingsSection, snapshotsSection, planesSection
 
 // ---------------------------------------------------------------- hooks
 
+// ---------------------------------------------------------------- the tools Claude can call (hooks/tools.ts)
+// The tab's own state and queue answer them: an action is an intent like a click on a button (one at a
+// time, a press first), a read is the same read /sdr does. Nothing here transmits, and what the tab
+// keeps for the tab (Web SDR, sharing to a phone, the bias-tee, settings, the HF test, recordings)
+// is refused in tools.ts before it gets here.
+
+// Resolves p's value, or null after ms: a tool call always answers within its budget.
+function within<T>($: any, p: Promise<T>, ms: number): Promise<T | null> {
+  return new Promise(resolve => {
+    let done = false
+    let t: { cancel?: () => void } | null = null
+    const finish = (v: T | null) => {
+      if (done) return
+      done = true
+      try {
+        t?.cancel?.()
+      } catch {}
+      resolve(v)
+    }
+    try {
+      t = $.clock.after(ms, () => finish(null))
+    } catch {}
+    p.then(finish, () => finish(null))
+  })
+}
+
+// A tool's wait for the queue; past it the press goes on and the answer says what is under way.
+const TOOL_READ_MS = 45_000
+const TOOL_ACT_MS = 100_000
+
+async function toolWait($: any, p: Promise<string>, ms: number, what: string): Promise<string> {
+  const t = await within($, p, ms)
+  if (t !== null) return t
+  const doing = doingLine()
+  return `${what} is still going${doing ? ` (${doing})` : ''}. It carries on in the tab; call sdr_status in a moment to see the result.`
+}
+
+function compass(deg: number): string {
+  return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round((((deg % 360) + 360) % 360) / 45) % 8] ?? 'N'
+}
+
+async function toolStatus($: any): Promise<string> {
+  await loadStore($)
+  if (!scan) await loadLast($)
+  const now = (await $.clock.now()) as number
+  await refreshStatus($)
+  await refreshGadgets($)
+  await pollSections($, now, 'action')
+  // The tab's own summary without its list of slash commands (those are for the person typing).
+  const lines = report(now).split('\n').filter(l => l !== COMMANDS_LINE)
+  return [
+    `Place: ${LOC.name}${LOC.error ? ` (${LOC.error})` : ''}`,
+    ...lines,
+    '',
+    'Bands for sdr_scan, and what the last scan of each heard:',
+    bandsText(now),
+  ].join('\n')
+}
+
+type PlaneRow = { icao: string; callsign?: string | null; reg?: string | null; alt?: number | null; altGnss?: number | null; onGround?: boolean | null; distNm?: number | null; bearing?: number | null; gs?: number | null; lastSeen?: number; squawk?: string | null; emergency?: string | null }
+
+async function toolPlanes($: any, limit: number): Promise<string> {
+  await loadStore($)
+  const now = (await $.clock.now()) as number
+  const r = await pyScript($, 'adsb.py', ['state'], 20_000, 'action')
+  if (!r || !Array.isArray(r.aircraft)) return `Could not read the Planes data${r?.say ? `: ${r.say}` : ''}.`
+  const on = !!r.job?.running
+  const acs = r.aircraft as PlaneRow[]
+  const heardAt = typeof r.updated === 'number' ? r.updated : 0
+  const age = heardAt ? ago(heardAt, now) : null
+  if (!acs.length) {
+    return on
+      ? `Planes is on and has not heard an aircraft yet${age ? ` (updated ${age})` : ''}. The first ones show up within a few seconds; a dipole upright by a window with a clear sky helps most.`
+      : `No aircraft saved. Planes is off, and it does not start from here: turn it on with sdr_job (job planes, state on), or in the tab.`
+  }
+  const withPos = acs.filter(a => typeof a.distNm === 'number')
+  const rows = acs.slice(0, limit).map(a => {
+    const id = a.callsign || a.reg || null
+    const alt = a.onGround ? 'on the ground' : typeof (a.alt ?? a.altGnss) === 'number' ? `${Math.round((a.alt ?? a.altGnss) as number).toLocaleString('en-US')} ft` : 'altitude unknown'
+    const where = typeof a.distNm === 'number' && typeof a.bearing === 'number' ? `${a.distNm.toFixed(1)} nm ${compass(a.bearing)} (${Math.round(a.bearing)}°)` : 'no position yet'
+    const em = a.emergency && a.emergency !== 'none' ? ` · EMERGENCY ${a.emergency}${a.squawk ? ` (squawk ${a.squawk})` : ''}` : ''
+    const seen = typeof a.lastSeen === 'number' ? ago(a.lastSeen, now) : '?'
+    return {
+      text: `  ${id ?? `hex ${a.icao}`} · ${alt} · ${typeof a.gs === 'number' ? `${Math.round(a.gs)} kt` : 'speed unknown'} · ${where} · heard ${seen}${em}`,
+      data: { flight: id, hex: a.icao, altitudeFt: a.onGround ? null : a.alt ?? a.altGnss ?? null, onGround: !!a.onGround, speedKt: typeof a.gs === 'number' ? Math.round(a.gs) : null, distanceNm: typeof a.distNm === 'number' ? Number(a.distNm.toFixed(1)) : null, bearingDeg: typeof a.bearing === 'number' ? Math.round(a.bearing) : null, heardSecondsAgo: typeof a.lastSeen === 'number' ? Math.max(0, Math.round((now - a.lastSeen) / 1000)) : null, emergency: a.emergency && a.emergency !== 'none' ? a.emergency : null },
+    }
+  })
+  const stale = !on && heardAt && now - heardAt > 120_000
+  const head = `${acs.length} aircraft (${withPos.length} with a position), distance and bearing from the station in ${LOC.name}. Planes is ${on ? 'on' : 'off'}${age ? `, data updated ${age}` : ''}${stale ? ': these are from the last run, not live' : ''}.`
+  const more = acs.length > rows.length ? `\n  … and ${acs.length - rows.length} more (sdr_planes with a bigger limit)` : ''
+  return `${head}\n${rows.map(x => x.text).join('\n')}${more}\n\nNumbers:\n${JSON.stringify({ planesOn: on, aircraft: rows.map(x => x.data) })}`
+}
+
+// A gadget's reading with the sensor's own ID taken out of it, whatever the decoder printed.
+function scrubId(text: string, d: Device): string {
+  let out = text
+  for (const v of [d.id, d.key.split('|')[1]]) {
+    const id = v === null || v === undefined ? '' : String(v)
+    if (id.length >= 3) out = out.split(id).join('…')
+  }
+  return out
+}
+
+async function toolGadgets($: any): Promise<string> {
+  await loadStore($)
+  await refreshGadgets($)
+  const now = (await $.clock.now()) as number
+  const g = gadgets
+  if (!g) return 'No gadget list yet.'
+  const on = !!(st?.gadgets.running ?? g.running)
+  const head = `Gadget listener ${on ? `on (${bandName(g.band)})` : 'off (sdr_job gadgets on starts it)'} · ${g.total} device${g.total === 1 ? '' : 's'} heard so far. Sensor IDs are left out on purpose.`
+  const h = g.hood
+  const hood = h ? `Neighbourhood: ${h.day} heard today, ${h.hour} in the last hour${h.lowBattery.length ? ` · low battery: ${h.lowBattery.join(', ')}` : ''}` : ''
+  if (!g.devices.length) return `${head}\nNothing heard yet. Sensors report every 15 s to a few minutes; tire sensors only while a car goes by.`
+  const rows = g.devices.slice(0, 15)
+  const lines = rows.map(d => {
+    const reading = scrubId(d.say || '', d)
+    return `  ${d.model}${d.channel !== null && d.channel !== undefined && d.channel !== '' ? ` ch ${d.channel}` : ''} · ${d.kind}${reading ? ` · ${reading}` : ''} · heard ${ago(d.last, now)} · ${d.count}×${d.lowBattery ? ' · LOW BATTERY' : ''}`
+  })
+  const data = rows.map(d => ({ model: d.model, channel: d.channel ?? null, kind: d.kind, reading: scrubId(d.say || '', d) || null, tempF: d.tempF ?? null, humidity: d.humidity ?? null, heardSecondsAgo: Math.max(0, Math.round((now - d.last) / 1000)), timesHeard: d.count, lowBattery: !!d.lowBattery }))
+  return [head, ...(hood ? [hood] : []), ...lines, '', 'Numbers:', JSON.stringify({ listenerOn: on, devices: data })].join('\n')
+}
+
+async function toolScan($: any, band: string): Promise<string> {
+  await loadStore($)
+  if (!bandOf(band)) return `Bands: ${BANDS.map(b => b.id).join(', ')}.`
+  const label = bandOf(band)?.label ?? band
+  const text = await toolWait($, runScan($, band), TOOL_ACT_MS, `Scanning ${label}`)
+  const shown = scan?.preset === band ? `\n${scanText(scan)}` : ''
+  return `${text}${shown}`
+}
+
+// A station by name: the tab's own station lists (FM calls, weather radio, repeaters, marine, air, HF, what was heard last).
+function findStation(q: string): { hit?: Preset; many?: Preset[] } {
+  const all: Preset[] = []
+  const seen = new Set<number>()
+  const add = (p: Preset) => {
+    const k = Math.round(p.mhz * 10000)
+    if (seen.has(k)) return
+    seen.add(k)
+    all.push(p)
+  }
+  for (const p of [...recentStations, NOAA, ...Object.values(FIXED).flat(), ...fmPresets(), ...airPresets(), ...railPresets()]) add(p)
+  for (const [f, n] of Object.entries(FM_NAMES)) add({ mhz: Number(f), label: `${f} ${n}`, mode: 'wbfm' })
+  const words = q.toLowerCase().split(/[\s,]+/).filter(Boolean)
+  const hay = (p: Preset) => `${p.label} ${nameAt(p.mhz) ?? ''} ${mhz(p.mhz)}`.toLowerCase()
+  const hits = all.filter(p => words.length > 0 && words.every(w => hay(p).includes(w)))
+  const exact = hits.filter(p => p.label.toLowerCase() === q.toLowerCase() || mhz(p.mhz) === q.trim())
+  if (exact.length === 1) return { hit: exact[0] }
+  if (hits.length === 1) return { hit: hits[0] }
+  return { many: hits.slice(0, 8) }
+}
+
+async function toolTune($: any, p: ReturnType<typeof parseTune> & { ok: true }): Promise<string> {
+  await loadStore($)
+  if (p.kind === 'stop') return toolWait($, stopListening($), TOOL_ACT_MS, 'Stopping the audio')
+  let f: number
+  let mode: string | null = p.mode
+  if (p.kind === 'station') {
+    const r = findStation(p.name)
+    if (!r.hit) {
+      return r.many?.length
+        ? `"${p.name}" matches more than one station: ${r.many.map(x => `${x.label} (${mhz(x.mhz)} MHz)`).join('; ')}. Pick one, or pass mhz.`
+        : `The tab does not know a station called "${p.name}". Give a frequency in MHz instead (and a mode), or ask sdr_status for the stations it has heard.`
+    }
+    f = r.hit.mhz
+    mode = mode ?? r.hit.mode
+  } else f = p.mhz
+  let text = await toolWait($, listen($, f, mode), TOOL_ACT_MS, `Tuning ${mhz(f)} MHz`)
+  if (f < HF_MAX && !st?.hf?.confirmed) text += ' (Below 28.8 MHz this is HF through the V4’s upconverter: it needs a 10–20 m long wire and a 9:1 balun, and it is not yet confirmed on air here; expect noise without one.)'
+  return text
+}
+
+async function toolJob($: any, job: 'planes' | 'aprs' | 'alerts' | 'gadgets', want: boolean): Promise<string> {
+  await loadStore($)
+  if (job === 'gadgets') return toolWait($, setGadgets($, want, '433'), TOOL_ACT_MS, `The gadget listener ${want ? 'start' : 'stop'}`)
+  const kind = job === 'planes' ? 'adsb' : job === 'alerts' ? 'same' : 'aprs'
+  const ctx = ctxFor($, (await $.clock.now()) as number)
+  return toolWait($, toggleJob(ctx, kind, want), TOOL_ACT_MS, `${kindLabel(kind)} ${want ? 'start' : 'stop'}`)
+}
+
 export const register: Register = on => {
+  // The six tools (registered at session.start by registerTools): each answers a failure in words.
+  // Spelled out one by one: the hook loader wants every on('tool.call', ...) at its own call site.
+  on('tool.call', { tool: 'mcp__radio__sdr_status' }, async $ => {
+    try {
+      return { result: await toolWait($, toolStatus($), TOOL_READ_MS, 'Reading the radio') }
+    } catch (err: any) {
+      return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
+    }
+  })
+  on('tool.call', { tool: 'mcp__radio__sdr_planes' }, async ($, e) => {
+    try {
+      return { result: await toolWait($, toolPlanes($, parsePlanes(e)), TOOL_READ_MS, 'Reading the planes') }
+    } catch (err: any) {
+      return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
+    }
+  })
+  on('tool.call', { tool: 'mcp__radio__sdr_gadgets' }, async $ => {
+    try {
+      return { result: await toolWait($, toolGadgets($), TOOL_READ_MS, 'Reading the gadgets') }
+    } catch (err: any) {
+      return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
+    }
+  })
+  on('tool.call', { tool: 'mcp__radio__sdr_scan' }, async ($, e) => {
+    const p = parseScan(e)
+    if (!p.ok) return { result: p.say }
+    try {
+      return { result: await toolScan($, p.band) }
+    } catch (err: any) {
+      return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
+    }
+  })
+  on('tool.call', { tool: 'mcp__radio__sdr_tune' }, async ($, e) => {
+    const p = parseTune(e)
+    if (!p.ok) return { result: p.say }
+    try {
+      return { result: await toolTune($, p) }
+    } catch (err: any) {
+      return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
+    }
+  })
+  on('tool.call', { tool: 'mcp__radio__sdr_job' }, async ($, e) => {
+    const p = parseJob(e)
+    if (!p.ok) return { result: p.say }
+    try {
+      return { result: await toolJob($, p.job, p.want) }
+    } catch (err: any) {
+      return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
+    }
+  })
+
   on('session.start', async ($, e, next) => {
     // Paths first: everything below reads or writes under the home folder.
     setHome((await $.env.get('HOME')) || '')
+    // The six tools Claude can call (hooks/tools.ts); a failure here never stops the tab.
+    try {
+      await registerTools($)
+    } catch {}
     // Claude Code has its own built-in /radio, so the tab's command is /sdr. A refused name says so instead of
     // stopping the whole mod: everything below still starts.
     try {
