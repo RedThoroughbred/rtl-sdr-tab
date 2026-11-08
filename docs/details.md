@@ -55,15 +55,15 @@ Walton sets a lot: the plane radar's centre and CVG's runways, the Cincinnati FM
 
 ```mermaid
 flowchart TD
-    boot(["The tab starts"]) --> exists{"Is there a location.json?"}
+    boot(["The tab starts"]) --> exists{"Is there a<br>location.json?"}
     exists -->|no| walton["Walton, KY, as built in"]
-    exists -->|yes| valid{"Does it read, with usable values?"}
-    valid -->|no| broken["Walton, KY, and a toast says what is wrong. The file is left alone."]
-    valid -->|yes| merge["Your keys replace Walton's. The weather and river blocks merge key by key."]
+    exists -->|yes| valid{"Does it read,<br>with usable values?"}
+    valid -->|no| broken["Walton, KY, and a toast<br>says what is wrong.<br>The file is left alone."]
+    valid -->|yes| merge["Your keys replace Walton's.<br>Weather and river merge<br>key by key."]
     merge --> moved{"Did lat or lon change?"}
-    moved -->|yes| drop["Walton's airports, places, radar places and river are dropped, unless your file has its own"]
+    moved -->|yes| drop["Walton's airports, places<br>and river are dropped,<br>unless your file has its own"]
     moved -->|no| use
-    drop --> use["The radar, APRS map, FM names, weather alerts, repeaters, Scanner and Web SDR use the result"]
+    drop --> use["The radar, APRS map, FM names,<br>weather alerts, repeaters, Scanner<br>and Web SDR use the result"]
     walton --> use
     broken --> use
 ```
@@ -450,10 +450,10 @@ Which counties count as yours comes from the `weather` block in [your location](
 OpenWebRX+ in Docker: a full live waterfall in any browser, your phone included, in the tab's own "Wildcat RF" look.
 
 ```mermaid
-flowchart LR
+flowchart TD
     v4["RTL-SDR Blog V4"] -->|USB| tcp["rtl_tcp on the Mac"]
     tcp -->|loopback| web["OpenWebRX+ in Docker"]
-    web -->|port 8073| browser["A browser on the Mac or your phone"]
+    web -->|port 8073| browser["A browser on the Mac<br>or your phone"]
     browser -->|Send to Radio tab| handoff["handoff.py, port 8074"]
     handoff --> file["handoff.json"]
     file --> tab["The Radio tab"]
@@ -606,13 +606,13 @@ The tab drives the Homebrew rtl-sdr tools through small standard-library Python 
 The V4 can be used by one program at a time, so every use of it is a job in [`scripts/radio.py`](../scripts/radio.py)'s job manager, with one name everywhere.
 
 ```mermaid
-flowchart LR
+flowchart TD
     press["You press Planes on"] --> jm["radio.py's job manager"]
-    jm --> held{"Does another job hold the V4?"}
+    jm --> held{"Does another job<br>hold the V4?"}
     held -->|"yes, Web SDR"| halt["Stop Web SDR and record why"]
     held -->|no| run
     halt --> run["Start rtl_adsb for Planes"]
-    run --> tab["On the V4 now shows Planes, and offers Resume Web SDR"]
+    run --> tab["On the V4 now shows Planes<br>and offers Resume Web SDR"]
 ```
 
 | Job | Shown as | What holds the V4 |
