@@ -8,6 +8,7 @@ New here? Start with the [README](../README.md): it has the pictures, the instal
 
 - [First run](#first-run) and [your location](#your-location)
 - The tab, top to bottom: [Start here](#start-here-and-on-the-v4-now) · [Tuner](#tuner) · [Radio world](#radio-world) · [Spectrum](#spectrum-and-the-tuning-strip) · [Mesh traffic](#mesh-traffic) · [Gadgets](#gadgets-nearby) · [Share to phone](#share-to-phone) · [Scanner](#scanner) · [Recordings](#recordings) · [IQ snapshots](#iq-snapshots) · [Planes](#planes) · [APRS](#aprs) · [Weather alerts](#weather-alerts) · [Web SDR](#web-sdr) · [Radio settings](#radio-settings) · [Status line](#the-status-line)
+- [Tools for Claude](#tools-for-claude)
 - [Commands](#commands)
 - [How it works](#how-it-works)
 - [Files](#files)
@@ -524,6 +525,28 @@ The line under the prompt shows only while something runs:
 | `Radio · watching alerts` | The alert watch, with nothing active |
 | `Radio · Web SDR on :8073` | Web SDR |
 
+## Tools for Claude
+
+The plugin gives Claude six tools and a skill. The actions use the same code, queue and one-program-at-a-time rule as the tab's buttons, so a tool call and a click never collide: the second waits its turn and both show in the timing log.
+
+| Tool | What it does | What it can't do |
+|---|---|---|
+| `sdr_status` | What `/sdr` says, in words: the place, whether the V4 is plugged in and what holds it, the tuner, the gadget listener, mesh traffic, the last scan and its strongest signals, the Scanner, recordings, Planes / APRS / weather-alert state, Web SDR state and settings, plus the band ids with what the last scan of each heard. | Start, stop or tune anything. |
+| `sdr_planes` | The aircraft from the last ADS-B data: flight or registration (or the hex address), altitude, speed, distance and bearing from the station, how long ago, and any emergency squawk. `limit` caps the list (default 15, closest first). Says when the data is old. | Start Planes, or touch the V4. It reads the saved data only, and never gives the receiver's coordinates. |
+| `sdr_gadgets` | The 433 MHz sensors heard: model, channel, kind, latest reading, how long ago, how many times, low battery, and the neighbourhood summary. | Show a sensor ID. A tire sensor's ID can identify a car, so IDs are left out, even if the decoder printed one in the reading. |
+| `sdr_scan` | Scans one band for about 10 s and lists the signals. `band` is one of `fm`, `noaa`, `air`, `adsb`, `2m`, `70cm`, `murs`, `marine`, `rail`, `gmrs`, `433`, `lora`, `mesh` (the tab's band buttons; friendly names like `weather` work too). | Scan a custom range (that stays in the tab). It takes the V4 and stops whatever was running. |
+| `sdr_tune` | Plays a frequency through the Mac's speakers: `mhz` with an optional `mode` (`wbfm`, `fm`, `am`, `usb`, `lsb`, `cw`), or a `station` the tab knows (a call sign like WEBN, "NOAA", "marine 16", "WWV 10"), or `stop: true`. Says if the signal is weak, and that HF below 28.8 MHz needs a long wire. | Transmit, record, or follow a station it can't name (it asks you to pick when two match). It takes the V4 and stops whatever was running. |
+| `sdr_job` | Planes, APRS, the weather-alert watch or the gadget listener, `on` or `off`. | Start Web SDR, share the V4 to a phone, switch the bias-tee, change PPM or other settings, run the HF test or delete recordings. It says to do those in the tab. |
+
+Every action says what it stopped ("stopped Planes, stopped playing 94.1 WNNF: the V4 does one thing at a time"), the same words the tab uses. A scan takes about 10 s and a tune about 4 s (it waits for the signal check, like `/sdr listen`); a call that outlasts its wait says it is still going and finishes in the tab.
+
+**Why those stay in the tab.** Web SDR starts a Docker container. Share to phone opens a network port with no password. The bias-tee puts 4.5 V on the antenna port, which can damage gear with a plain antenna. PPM and the other settings change how every later listen works. These are the person's to do, with the tab in front of them, and the tools refuse them in words.
+
+The `radio-guide` skill ([`skills/radio-guide/SKILL.md`](../skills/radio-guide/SKILL.md)) loads when you ask what you're hearing, or about a frequency, a scanner, planes, ADS-B, APRS, weather radio, 433 MHz sensors or Meshtastic. It teaches Claude what lives where from the tab's own band data, the status, scan, identify, tune routine, and the receive-only manners: no following encrypted or private traffic, and other people's data and sensor IDs stay private. The place comes from the tab, so it follows [your location](#your-location).
+
+> [!NOTE]
+> The tools only ever receive. Every tool description says so, and that nothing here can transmit.
+
 ## Commands
 
 Every command replies in text that reads well on the phone.
@@ -901,6 +924,8 @@ python3 scripts/digital.py same selftest
 - **Presses:** the pending label in the very next drawing, with the Doing now line; a press while another runs queued and run after it, with a newer one replacing the one waiting; three quick presses running once (and a late fourth asking nothing); a press jumping ahead of polls already queued, which wait until it's done; `webrx/status.sh` never holding a press up, with its stale answer dropped; Listen starting with `--quick` while the weak-signal toast still comes from the meter; a failed press ending in a toast; and the timing log's lines along the way.
 - **SSB, CW, HF, the Scanner, snapshots and settings:** the SSB and CW chips and the 1 kHz step; the HF tab dimmed with the antenna note until `hf confirm` lights it and plays; the Scanner on and off through the job system, with its state line, hits, Hold, Skip, Lock out and the ★ / ⛔ / ✓ row buttons (and `scan fm` still a sweep); snapshots (capture, the list, ▶ waterfall as an Svg, decode gadgets only on 433.92, 🗑); the settings panel's presses; and nothing wider than the phone.
 - **Your location:** the tab's side of `location.json`.
+
+`tests/tools.test.ts` runs the six tools for Claude through the same fake world (`tests/world.ts`, shared with `radio.test.ts`; no V4 anywhere): that they are registered with schemas and receive-only descriptions; that the read tools start, stop and tune nothing; that `sdr_gadgets` never prints a sensor ID, even one the decoder put in the reading; that each action goes through the tab's queue, says what it stopped and shows in the timing log, and waits behind a press that is running; and every refusal (Web SDR, sharing, the bias-tee, settings, the HF test, recordings, bad bands, modes and frequencies).
 
 `tests/tuning-strip.test.ts` calls the strip's module function straight, with fake props and a fake surface: what it draws, and that a pointer or a key posts the right MHz (the edges, snapping to a station, the FM grid, and quick presses adding up).
 

@@ -93,6 +93,34 @@ Everything `rtl_433` hears on 433.92 MHz: weather stations, soil sensors, doorbe
 - **HF:** shortwave through the V4's built-in upconverter, once a long-wire antenna is on it.
 - **Share to phone:** an SDR app on your phone can use the V4 over your network while you share.
 
+## Ask Claude
+
+Version 0.6.0 lets Claude use the radio too. Six tools and a skill come with the plugin, so you can just talk:
+
+- "What am I hearing right now?" Claude checks the tab, scans a band if it needs to, and tells you what the signals are.
+- "What planes are overhead?" Claude reads the aircraft from the last ADS-B data: flight, altitude, speed, and how far away and which way.
+- "Play the weather radio" or "tune 121.5 AM". Claude plays it on the Mac's speakers and says if the signal is weak.
+
+Claude can read the tab's status, the planes and the gadgets, scan a band, listen to a frequency or a station by name, and switch Planes, APRS, the weather-alert watch and the gadget listener on or off. The `radio-guide` skill teaches it what lives where on the dial, how to find out what a signal is, and the manners of a receiver. [The details](docs/details.md#tools-for-claude) list every tool.
+
+> [!WARNING]
+> This only ever receives. Nothing Claude does here transmits. Web SDR, sharing to a phone, the bias-tee, settings, the HF test and deleting recordings stay in the tab; Claude will say to do those there. Starting a scan, a tune or a job takes the V4 and stops whatever was running, just like the tab's buttons.
+
+## What's new in 0.6.0
+
+- **Tools for Claude:** `sdr_status`, `sdr_planes`, `sdr_gadgets`, `sdr_scan`, `sdr_tune` and `sdr_job`.
+- **The `radio-guide` skill:** teaches Claude the bands, "what am I hearing?", planes, APRS and alerts, and receive-only manners.
+- A tool press and a click on the tab share one queue, so they never collide. Sensor IDs never leave the tab.
+
+## Updating
+
+```
+claude plugin marketplace update rtl-sdr-tab
+claude plugin update radio@rtl-sdr-tab
+```
+
+Then run `/reload-plugins` in a session that's already open.
+
 ## How it works
 
 - The tab drives the Homebrew rtl-sdr tools (`rtl_fm`, `rtl_power`, `rtl_adsb`, `rtl_433`, `rtl_tcp`) through small standard-library Python scripts.
