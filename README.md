@@ -22,13 +22,19 @@ Out of the box it's set up for my station in Walton, Kentucky. A small location 
 
 ## Install
 
-In Claude Code 2.1.275 or later:
+In Claude Code 2.1.275 or later, type:
 
 ```
 /plugin install radio --marketplace RedThoroughbred/rtl-sdr-tab
 ```
 
-Plug in the V4 and type `/sdr`. (Claude Code has its own `/radio`, so this tab's command is `/sdr`.)
+In the Claude desktop app, `/plugin` opens the app's own plugin settings instead, so run this in a terminal:
+
+```
+claude plugin install radio --marketplace RedThoroughbred/rtl-sdr-tab
+```
+
+In a session that's already open, run `/reload-plugins`. Plug in the V4 and type `/sdr`. (Claude Code has its own `/radio`, so this tab's command is `/sdr`.)
 
 ## What you need
 
