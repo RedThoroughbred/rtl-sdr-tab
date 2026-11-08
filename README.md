@@ -2,6 +2,8 @@
   <img src="docs/images/banner.png" alt="The Radio tab: the tuner playing 89.1 FM with its audio spectrum, beside the planes radar" width="100%">
 </p>
 
+<p align="center"><img src=".claude-plugin/icon.png" alt="rtl-sdr-tab icon: a spectrum with glowing peaks over a waterfall" width="112"></p>
+
 <h1 align="center">rtl-sdr-tab</h1>
 
 <p align="center">
