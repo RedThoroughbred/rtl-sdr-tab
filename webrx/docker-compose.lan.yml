@@ -1,0 +1,7 @@
+# Adds the Mac's LAN address to the published ports (merged with
+# docker-compose.yml). webrx.py sets WEBRX_LAN_IP from the default route's
+# interface; it skips this file when the Mac has no LAN address.
+services:
+  openwebrx:
+    ports:
+      - "${WEBRX_LAN_IP:?WEBRX_LAN_IP is set by webrx.py}:${WEBRX_PORT:-8073}:8073"

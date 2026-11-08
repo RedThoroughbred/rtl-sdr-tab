@@ -1,0 +1,325 @@
+{
+    "version": 8,
+    "receiver_name": "Wildcat RF",
+    "receiver_location": "Walton, Kentucky, USA",
+    "receiver_asl": 285,
+    "receiver_admin": "",
+    "receiver_gps": {
+        "lat": 38.8756,
+        "lon": -84.6105
+    },
+    "receiver_country": "US",
+    "bandplan_region": 2,
+    "photo_title": "Wildcat RF, Walton, Kentucky",
+    "photo_desc": "RTL-SDR Blog V4 on a Mac mini, fed to OpenWebRX+ through rtl_tcp. Receive only.",
+    "max_clients": 4,
+    "max_clients_per_ip": 4,
+    "allow_chat": false,
+    "allow_center_freq_changes": true,
+    "magic_key": "",
+    "map_type": "leaflet",
+    "wfm_deemphasis_tau": 7.5e-05,
+    "wfm_rds_rbds": true,
+    "sdrs": {
+        "v4": {
+            "name": "V4",
+            "type": "rtl_tcp",
+            "enabled": true,
+            "remote": "host.docker.internal:1234",
+            "ppm": 0,
+            "rf_gain": 38.6,
+            "profiles": {
+                "bcfm-103": {
+                    "name": "FM 101.8-104.2 MHz (WEBN, WGRR)",
+                    "center_freq": 103000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 102700000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-89": {
+                    "name": "FM 87.8-90.2 MHz (WKCX)",
+                    "center_freq": 89000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 89100000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-91": {
+                    "name": "FM 89.8-92.2 MHz (WGUC, WVXU)",
+                    "center_freq": 91000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 91700000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-93": {
+                    "name": "FM 91.8-94.2 MHz (WOFX, WNNF)",
+                    "center_freq": 93000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 94100000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-95": {
+                    "name": "FM 93.8-96.2 MHz",
+                    "center_freq": 95000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 95100000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-97": {
+                    "name": "FM 95.8-98.2 MHz (WYGY)",
+                    "center_freq": 97000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 97300000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-99": {
+                    "name": "FM 97.8-100.2 MHz (WRRM)",
+                    "center_freq": 99000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 98500000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-101": {
+                    "name": "FM 99.8-102.2 MHz (WIZF, WKRQ)",
+                    "center_freq": 101000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 101900000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-105": {
+                    "name": "FM 103.8-106.2 MHz (WUBE)",
+                    "center_freq": 105000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 105100000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "bcfm-107": {
+                    "name": "FM 105.8-108.2 MHz (WNKR, WKFS)",
+                    "center_freq": 107000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 107100000,
+                    "start_mod": "wfm",
+                    "tuning_step": "50000",
+                    "rf_gain": 19.7
+                },
+                "noaa": {
+                    "name": "NOAA Weather 162.40-162.55 MHz (+ AIS)",
+                    "center_freq": 162300000,
+                    "samp_rate": 1024000,
+                    "start_freq": 162550000,
+                    "start_mod": "nfm",
+                    "tuning_step": "25000"
+                },
+                "air-119": {
+                    "name": "Airband 118.0-120.4 MHz (AM)",
+                    "center_freq": 119212500,
+                    "samp_rate": 2400000,
+                    "start_freq": 118300000,
+                    "start_mod": "am",
+                    "tuning_step": "25000"
+                },
+                "air-122": {
+                    "name": "Airband 120.8-123.2 MHz (121.5 guard)",
+                    "center_freq": 122012500,
+                    "samp_rate": 2400000,
+                    "start_freq": 121500000,
+                    "start_mod": "am",
+                    "tuning_step": "25000"
+                },
+                "air-134": {
+                    "name": "Airband 132.6-135.0 MHz (AM)",
+                    "center_freq": 133812500,
+                    "samp_rate": 2400000,
+                    "start_freq": 134375000,
+                    "start_mod": "am",
+                    "tuning_step": "25000"
+                },
+                "2m-aprs": {
+                    "name": "2 m 143.8-146.2 MHz (APRS 144.39)",
+                    "center_freq": 145000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 144390000,
+                    "start_mod": "packet",
+                    "tuning_step": "5000"
+                },
+                "2m-rpt": {
+                    "name": "2 m 145.8-148.2 MHz (repeaters, 146.52)",
+                    "center_freq": 147012500,
+                    "samp_rate": 2400000,
+                    "start_freq": 146520000,
+                    "start_mod": "nfm",
+                    "tuning_step": "5000"
+                },
+                "70cm": {
+                    "name": "70 cm 443.8-446.2 MHz (446.0 simplex)",
+                    "center_freq": 445012500,
+                    "samp_rate": 2400000,
+                    "start_freq": 446000000,
+                    "start_mod": "nfm",
+                    "tuning_step": "12500"
+                },
+                "marine": {
+                    "name": "Marine VHF 155.8-158.2 MHz (Ch 16)",
+                    "center_freq": 157012500,
+                    "samp_rate": 2400000,
+                    "start_freq": 156800000,
+                    "start_mod": "nfm",
+                    "tuning_step": "25000"
+                },
+                "ism915": {
+                    "name": "915 MHz ISM 913.8-916.2 MHz (rtl_433)",
+                    "center_freq": 915000000,
+                    "samp_rate": 2400000,
+                    "start_freq": 915000000,
+                    "start_mod": "ism",
+                    "tuning_step": "25000"
+                },
+                "mesh": {
+                    "name": "915 MHz ISM 906.3-908.7 MHz (Meshtastic LongFast)",
+                    "center_freq": 907500000,
+                    "samp_rate": 2400000,
+                    "start_freq": 906875000,
+                    "start_mod": "meshtastic",
+                    "tuning_step": "25000"
+                },
+                "ism433": {
+                    "name": "433 MHz ISM 432.3-434.7 MHz (rtl_433)",
+                    "center_freq": 433500000,
+                    "samp_rate": 2400000,
+                    "start_freq": 433920000,
+                    "start_mod": "ism",
+                    "tuning_step": "25000"
+                },
+                "hf-49m": {
+                    "name": "HF 49 m shortwave + WWV 5 MHz + UVB-76 4.625 (4.4-6.8 MHz)",
+                    "center_freq": 5600000,
+                    "samp_rate": 2400000,
+                    "start_freq": 5000000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "hf-40m": {
+                    "name": "HF 40 m ham 7.0-7.3 (FT8 7.074, WSPR 7.0386) + 41 m shortwave",
+                    "center_freq": 7300000,
+                    "samp_rate": 1024000,
+                    "start_freq": 7074000,
+                    "start_mod": "ft8",
+                    "tuning_step": "1000"
+                },
+                "hf-wefax": {
+                    "name": "HF weather fax: NMG New Orleans 8503.9 kHz (USB dial 8502.0)",
+                    "center_freq": 8500000,
+                    "samp_rate": 1024000,
+                    "start_freq": 8502000,
+                    "start_mod": "fax",
+                    "tuning_step": "1000"
+                },
+                "hf-31m": {
+                    "name": "HF 31 m shortwave 9.4-9.9 + WWV 10 MHz",
+                    "center_freq": 9700000,
+                    "samp_rate": 1024000,
+                    "start_freq": 10000000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "hf-25m": {
+                    "name": "HF 25 m shortwave 11.6-12.1 MHz",
+                    "center_freq": 11850000,
+                    "samp_rate": 1024000,
+                    "start_freq": 11800000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "hf-20m": {
+                    "name": "HF 20 m ham 14.0-14.35 (FT8 14.074, WSPR 14.0956, SSTV 14.230) + CHU 14.67",
+                    "center_freq": 14200000,
+                    "samp_rate": 1024000,
+                    "start_freq": 14074000,
+                    "start_mod": "ft8",
+                    "tuning_step": "1000"
+                },
+                "hf-sstv": {
+                    "name": "HF 20 m SSTV 14.230 MHz (USB pictures)",
+                    "center_freq": 14200000,
+                    "samp_rate": 1024000,
+                    "start_freq": 14230000,
+                    "start_mod": "sstv",
+                    "tuning_step": "1000"
+                },
+                "hf-19m": {
+                    "name": "HF 19 m shortwave 15.1-15.8 + WWV 15 MHz",
+                    "center_freq": 15500000,
+                    "samp_rate": 1024000,
+                    "start_freq": 15000000,
+                    "start_mod": "am",
+                    "tuning_step": "5000"
+                },
+                "hf-navtex": {
+                    "name": "NAVTEX 518 / 490 kHz (maritime safety; the edge of the V4's HF range)",
+                    "center_freq": 900000,
+                    "samp_rate": 1024000,
+                    "start_freq": 518000,
+                    "start_mod": "navtex",
+                    "tuning_step": "1000"
+                }
+            },
+            "scheduler": {
+                "type": "static",
+                "schedule": {
+                    "1000-0400": "2m-aprs",
+                    "0400-1000": "ism433"
+                }
+            }
+        }
+    },
+    "services_enabled": true,
+    "services_decoders": [
+        "packet",
+        "ism"
+    ],
+    "map_position_retention_time": 43200,
+    "waterfall_scheme": "CustomWaterfall",
+    "waterfall_colors": [
+        527128,
+        592924,
+        921897,
+        1579586,
+        2500455,
+        3750297,
+        4871126,
+        4159734,
+        3185909,
+        2538977,
+        2611394,
+        3599776,
+        5372543,
+        7798371,
+        10418508,
+        13036347,
+        15258927,
+        16758823,
+        16750112,
+        16740635,
+        15289364,
+        13118476,
+        10884355,
+        9505536
+    ]
+}

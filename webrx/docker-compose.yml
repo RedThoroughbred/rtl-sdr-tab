@@ -1,0 +1,49 @@
+# OpenWebRX+ ("Web SDR") for the RTL-SDR Blog V4, through rtl_tcp on the Mac.
+#
+# Docker Desktop on macOS cannot pass USB devices into a container, so the V4
+# stays on the Mac: webrx.py runs rtl_tcp bound to 127.0.0.1:1234 and the
+# container reaches it as host.docker.internal:1234 (settings.json, "remote").
+#
+# Start and stop it with start.sh / stop.sh (they also run rtl_tcp and hold the
+# Radio tab's V4 lock). A bare `docker compose up` works too, but then nothing
+# feeds it samples and the dongle lock is not taken.
+#
+# Settings, users and bookmarks live in $WEBRX_DATA/{etc,var,wildcat}; webrx.py sets it
+# (~/Library/Application Support/radio/openwebrx unless <radio folder>/webrx-data names another). The container's
+# init copies its defaults into empty folders; webrx.py seeds settings.json and
+# bookmarks.json from ./config on first run.
+#
+# Ports: the web UI is published on 127.0.0.1 here; docker-compose.lan.yml adds
+# the Mac's LAN address (webrx.py sets WEBRX_LAN_IP). It is deliberately not
+# bound to 0.0.0.0, so it is not on the tailnet until Seth runs `tailscale serve`.
+name: wildcat-webrx
+
+services:
+  openwebrx:
+    image: slechev/openwebrxplus:1.2.126   # pinned; bump deliberately
+    container_name: wildcat-webrx
+    restart: "no"                          # start.sh owns the lifecycle (dongle lock)
+    ports:
+      - "127.0.0.1:${WEBRX_PORT:-8073}:8073"
+    environment:
+      TZ: America/New_York
+    volumes:
+      - ${WEBRX_DATA:?set WEBRX_DATA (webrx.py sets it)}/etc:/etc/openwebrx
+      - ${WEBRX_DATA:?set WEBRX_DATA (webrx.py sets it)}/var:/var/lib/openwebrx
+      # The Wildcat RF package, read-only. The page asks for static/css/custom.css: the image's
+      # htdocs/css/custom.css is a link to /etc/openwebrx/custom.css, and webrx.py makes that a
+      # link to /opt/wildcat-skin/custom.css (Docker Desktop cannot mount one file inside the
+      # etc bind mount above). It asks for static/plugins/receiver/init.js, which loads our
+      # plugin from static/plugins/receiver/wildcat/. The plugin's data (the Radio tab's
+      # bookmarks, written by webrx.py sync-bookmarks) sits next to it as wildcat-data/.
+      - ./skin:/opt/wildcat-skin:ro
+      - ./plugins/receiver/init.js:/usr/lib/python3/dist-packages/htdocs/plugins/receiver/init.js:ro
+      - ./plugins/receiver/wildcat:/usr/lib/python3/dist-packages/htdocs/plugins/receiver/wildcat:ro
+      - ${WEBRX_DATA:?set WEBRX_DATA (webrx.py sets it)}/wildcat:/usr/lib/python3/dist-packages/htdocs/plugins/receiver/wildcat-data:ro
+    tmpfs:
+      - /tmp/openwebrx                     # decoder scratch files stay in RAM
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"

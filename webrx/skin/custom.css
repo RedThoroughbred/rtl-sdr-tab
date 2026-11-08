@@ -1,0 +1,502 @@
+/*
+ * Wildcat RF: the Radio tab's instrument look for OpenWebRX+ (1.2.126).
+ *
+ * The page asks for static/css/custom.css, which the image links to /etc/openwebrx/custom.css;
+ * docker-compose.yml mounts this file there read-only. It loads after OpenWebRX+'s own CSS, so
+ * these rules win at equal specificity. A theme picked in Receiver > Settings still wins
+ * (body.has-theme rules are more specific): pick "Default" to come back here.
+ *
+ * Palette (the Radio tab's): a near-black ground, teal LCD digits, amber for what you touch.
+ * The waterfall's colours are not set here: settings.json gives it the tab's ramp (Custom
+ * waterfall colours, near-black then Turbo). Plain CSS, no images, no web fonts.
+ */
+
+:root {
+    --wc-ground: #0b1114;
+    --wc-panel: #10171b;
+    --wc-panel-2: #141e23;
+    --wc-well: #071012;
+    --wc-edge: #243238;
+    --wc-edge-soft: #1a252a;
+    --wc-text: #c9d4da;
+    --wc-bright: #e6edf0;
+    --wc-dim: #7f9199;
+    --wc-lcd: #5ef2d6;
+    --wc-lcd-dim: rgba(94, 242, 214, 0.14);
+    --wc-lcd-glow: rgba(94, 242, 214, 0.35);
+    --wc-amber: #f4a640;
+    --wc-amber-dim: rgba(244, 166, 64, 0.16);
+    --wc-green: #7ad67a;
+    --wc-red: #ff6b6b;
+    --wc-mono: 'roboto-mono', Menlo, monospace;
+}
+
+html, body {
+    background-color: var(--wc-ground);
+    color: var(--wc-text);
+}
+
+/* ---------------------------------------------------------------- header */
+
+.webrx-top-container {
+    background-color: var(--wc-ground);
+    background-image: linear-gradient(180deg, #131d22 0%, var(--wc-ground) 100%);
+    border-bottom: 1px solid var(--wc-edge);
+}
+
+.webrx-top-bar {
+    background: transparent;
+    align-items: center;
+}
+
+/* The wordmark, where OpenWebRX+'s logo and stock avatar were. */
+.webrx-top-logo,
+.webrx-rx-avatar {
+    display: none !important;
+}
+
+.webrx-top-bar::before {
+    content: "WILDCAT\A RF";
+    white-space: pre;
+    flex: 0 0 auto;
+    margin: 0 4px 0 12px;
+    padding: 5px 9px 4px 9px;
+    font: 700 13px/1.05 var(--wc-mono);
+    letter-spacing: 0.22em;
+    color: var(--wc-lcd);
+    text-shadow: 0 0 8px var(--wc-lcd-glow);
+    background: var(--wc-well);
+    border: 1px solid #1d3b37;
+    border-left: 3px solid var(--wc-amber);
+    border-radius: 6px;
+}
+
+.webrx-rx-texts div, .webrx-rx-texts h1 {
+    color: var(--wc-dim);
+}
+
+.webrx-rx-title {
+    color: var(--wc-text) !important;
+    letter-spacing: 0.02em;
+}
+
+.openwebrx-main-buttons {
+    color: var(--wc-text);
+    text-shadow: none;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.openwebrx-main-buttons .button {
+    border-radius: 8px;
+}
+
+.openwebrx-main-buttons .button img,
+.openwebrx-main-buttons .button svg {
+    height: 30px;
+    margin-top: 4px;
+    filter: none;
+    fill: var(--wc-text);
+}
+
+.openwebrx-main-buttons .button:hover {
+    background-color: var(--wc-amber-dim);
+    color: var(--wc-amber);
+}
+
+.openwebrx-main-buttons .button:hover svg {
+    fill: var(--wc-amber);
+}
+
+.openwebrx-main-buttons .button:active {
+    background-color: rgba(244, 166, 64, 0.3);
+}
+
+.openwebrx-description-container {
+    background: rgba(11, 17, 20, 0.92);
+}
+
+.webrx-rx-photo-title {
+    color: var(--wc-lcd);
+    text-shadow: none;
+}
+
+.webrx-rx-photo-desc {
+    color: var(--wc-text);
+    text-shadow: none;
+    font-weight: normal;
+}
+
+.openwebrx-rx-details-arrow svg {
+    filter: none;
+    opacity: 0.6;
+}
+
+/* ---------------------------------------------------------------- spectrum, scale and waterfall frame */
+
+#openwebrx-frequency-container {
+    background-color: var(--wc-panel);
+    background-image: linear-gradient(180deg, #0f171b 0%, #0b1215 100%);
+    border-bottom: 1px solid var(--wc-edge-soft);
+}
+
+#webrx-canvas-background {
+    background-color: var(--wc-ground);
+    background-image: none !important;
+}
+
+.openwebrx-tune-button {
+    background: var(--wc-panel-2);
+    box-shadow: inset 0 0 0 1px var(--wc-edge);
+}
+
+/* Bookmarks: the server's (ours, from the Radio tab) amber; your own (this browser) teal;
+   the band plan's dial frequencies a quiet green. */
+#openwebrx-bookmarks-container .bookmark {
+    background-color: var(--wc-amber);
+    color: #1a1206;
+    border: 1px solid #b06f1c;
+    border-radius: 4px;
+    font: 600 11px/14px var(--wc-mono);
+    letter-spacing: 0.01em;
+    max-width: 64px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#openwebrx-bookmarks-container .bookmark:after {
+    border-top-color: var(--wc-amber);
+}
+
+#openwebrx-bookmarks-container .bookmark.selected {
+    outline: 2px solid var(--wc-bright);
+    outline-offset: 0;
+}
+
+#openwebrx-bookmarks-container .bookmark[data-source=local] {
+    background-color: var(--wc-lcd);
+    border-color: #2a9c89;
+    color: #04211c;
+}
+
+#openwebrx-bookmarks-container .bookmark[data-source=local]:after {
+    border-top-color: var(--wc-lcd);
+}
+
+#openwebrx-bookmarks-container .bookmark[data-source=dial_frequencies] {
+    background-color: #2c4a35;
+    border-color: #3f6b4c;
+    color: #bfe9c7;
+}
+
+#openwebrx-bookmarks-container .bookmark[data-source=dial_frequencies]:after {
+    border-top-color: #2c4a35;
+}
+
+/* ---------------------------------------------------------------- panels */
+
+.openwebrx-panel,
+.openwebrx-dialog,
+.openwebrx-plugin-window {
+    background-color: var(--wc-panel);
+    color: var(--wc-text);
+    border: 1px solid var(--wc-edge);
+    border-radius: 12px;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+#openwebrx-panel-receiver {
+    border: 1px solid var(--wc-edge);
+}
+
+#openwebrx-panel-status {
+    border: 0;
+    box-shadow: none;
+}
+
+.openwebrx-panel a,
+.openwebrx-dialog a {
+    color: var(--wc-lcd);
+}
+
+.openwebrx-checkbox {
+    color: var(--wc-dim);
+}
+
+.openwebrx-section-divider {
+    color: var(--wc-dim);
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--wc-edge-soft);
+    padding-bottom: 2px;
+}
+
+.openwebrx-section-divider:hover {
+    color: var(--wc-amber);
+}
+
+/* The frequency: a receiver's LCD. */
+#openwebrx-panel-receiver .frequencies {
+    background: var(--wc-well);
+    border: 1px solid #1d3b37;
+    border-radius: 8px;
+    padding: 3px 8px 2px 8px;
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.webrx-actual-freq,
+.webrx-actual-freq input {
+    color: var(--wc-lcd);
+    text-shadow: 0 0 8px var(--wc-lcd-glow);
+}
+
+.webrx-actual-freq .digit:hover {
+    color: var(--wc-amber);
+    background: var(--wc-amber-dim);
+    text-shadow: none;
+}
+
+.webrx-actual-freq .input-group input,
+.webrx-actual-freq .input-group select {
+    color: var(--wc-lcd);
+    background: var(--wc-well);
+}
+
+.webrx-mouse-freq {
+    color: var(--wc-dim);
+    margin-bottom: 1px;
+}
+
+.webrx-cross-freq {
+    background: rgba(7, 16, 18, 0.85);
+    color: var(--wc-lcd);
+    border: 1px solid #1d3b37;
+}
+
+/* Buttons: dark keys; amber under the finger; the selected mode lit teal.
+   Sizes stay OpenWebRX+'s own: its buttons are content-box (e.g. a mode key is 19 px of text plus
+   4.2 px padding), so the key's edge is an inset ring (box-shadow), never a border, and the box
+   model is never changed. 0.3.2 used a border with box-sizing: border-box, which squeezed every
+   key to 19 px: the labels spilled out and the mode rows overlapped (DIG half covered). */
+.openwebrx-button {
+    background: linear-gradient(180deg, #18242a 0%, #121b20 100%);
+    color: var(--wc-text);
+    box-shadow: inset 0 0 0 1px var(--wc-edge);
+    font-weight: 600;
+}
+
+.openwebrx-button svg {
+    fill: var(--wc-text);
+}
+
+.openwebrx-button:hover {
+    background: #1c2a31;
+    color: var(--wc-amber);
+    box-shadow: inset 0 0 0 1px #5a4426;
+}
+
+.openwebrx-button:hover svg {
+    fill: var(--wc-amber);
+}
+
+.openwebrx-button:active {
+    background: var(--wc-amber-dim);
+    color: var(--wc-amber);
+}
+
+.openwebrx-demodulator-button.highlighted,
+.openwebrx-button.highlighted {
+    background: var(--wc-lcd-dim);
+    color: var(--wc-lcd);
+    box-shadow: inset 0 0 0 1px rgba(94, 242, 214, 0.6);
+    text-shadow: 0 0 6px var(--wc-lcd-glow);
+}
+
+.openwebrx-button.highlighted svg {
+    fill: var(--wc-lcd);
+}
+
+.openwebrx-demodulator-button.same-mod {
+    color: #e9d3a8;
+}
+
+.openwebrx-button.disabled {
+    opacity: 0.4;
+}
+
+/* Lists and text fields. */
+.openwebrx-panel select,
+.openwebrx-panel input:not([type=range]):not([type=checkbox]),
+.openwebrx-dialog select,
+.openwebrx-dialog input,
+#openwebrx-sdr-profiles-listbox {
+    background: var(--wc-panel-2);
+    color: var(--wc-text);
+    border: 1px solid var(--wc-edge);
+    border-radius: 6px;
+}
+
+.openwebrx-panel select option,
+.openwebrx-dialog select option {
+    background: var(--wc-panel);
+    color: var(--wc-text);
+}
+
+/* Sliders: a thin dark track, a teal knob. */
+input[type=range] {
+    --track-background: #22323a;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    border: 1px solid #2c3e46;
+    border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    background: var(--wc-lcd);
+    border: 1px solid #0b3a33;
+    box-shadow: 0 0 6px var(--wc-lcd-glow);
+    height: 14px;
+    width: 14px;
+    margin-top: -6px;
+}
+
+input[type=range]::-moz-range-track {
+    border: 1px solid #2c3e46;
+}
+
+input[type=range]::-moz-range-thumb {
+    background: var(--wc-lcd);
+    border: 1px solid #0b3a33;
+}
+
+/* The S-meter frame and clock. */
+#openwebrx-smeter {
+    border-color: var(--wc-edge);
+    background: var(--wc-well);
+}
+
+#openwebrx-clock-utc,
+#openwebrx-smeter-db {
+    color: var(--wc-dim);
+    font-family: var(--wc-mono);
+}
+
+/* Status bars. */
+.openwebrx-progressbar {
+    background-color: #0c2a2a;
+    border: 1px solid var(--wc-edge-soft);
+}
+
+.openwebrx-progressbar-bar {
+    background-color: #1f8f80;
+}
+
+/* Message panels (APRS, ISM, Meshtastic...) and the digimode panel. */
+.openwebrx-message-panel thead tr {
+    color: var(--wc-dim);
+}
+
+.openwebrx-message-panel tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+#openwebrx-digimode-canvas-container {
+    background: var(--wc-well);
+}
+
+/* The plugin stack (WILDCAT and the like, left of the receiver panel). */
+.openwebrx-plugin-button {
+    font-size: 9pt;
+    letter-spacing: 0.06em;
+}
+
+.openwebrx-plugin-header {
+    background: var(--wc-panel-2);
+    border: 0;
+    border-bottom: 1px solid var(--wc-edge);
+    box-shadow: none;
+}
+
+/* Overlays and the bubble. */
+.openwebrx-overlay {
+    background: rgba(7, 12, 14, 0.82);
+}
+
+.openwebrx-overlay .overlay-content {
+    color: var(--wc-lcd);
+    text-shadow: 0 0 10px var(--wc-lcd-glow);
+}
+
+#openwebrx-autoplay-overlay svg {
+    fill: var(--wc-lcd);
+}
+
+.openwebrx-bubble {
+    background: rgba(7, 16, 18, 0.92);
+    color: var(--wc-text);
+    border: 1px solid var(--wc-edge);
+}
+
+.nano .nano-pane {
+    background: var(--wc-edge-soft);
+}
+
+.nano .nano-slider {
+    background: var(--wc-dim) !important;
+}
+
+/* ---------------------------------------------------------------- the phone (390 px) */
+
+@media (max-width: 600px) {
+    .webrx-top-bar {
+        height: 54px;
+    }
+
+    .webrx-top-bar::before {
+        font-size: 10.5px;
+        margin: 0 2px 0 6px;
+        padding: 4px 6px 3px 6px;
+        letter-spacing: 0.16em;
+    }
+
+    .webrx-rx-texts {
+        display: none;
+    }
+
+    .openwebrx-main-buttons {
+        padding: 3px;
+        font-size: 8.5px;
+        letter-spacing: 0;
+        margin-left: auto;
+    }
+
+    .openwebrx-main-buttons .button {
+        width: 44px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .openwebrx-main-buttons .button img,
+    .openwebrx-main-buttons .button svg {
+        height: 22px;
+    }
+
+    .webrx-actual-freq,
+    .webrx-actual-freq input {
+        font-size: 15pt;
+    }
+
+    /* The plugin stack (WILDCAT) rides above the receiver panel's top edge instead of sitting
+       on the status bars at the bottom left. */
+    .openwebrx-plugin-stack {
+        right: auto;
+        left: 0;
+        bottom: 100%;
+        margin: 0 0 6px 0;
+        flex-direction: row;
+    }
+}

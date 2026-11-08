@@ -1,0 +1,132 @@
+[
+    {
+        "name": "WKCX",
+        "frequency": 89100000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WGUC",
+        "frequency": 90900000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WVXU",
+        "frequency": 91700000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WOFX",
+        "frequency": 92500000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WNNF",
+        "frequency": 94100000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WYGY",
+        "frequency": 97300000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WRRM",
+        "frequency": 98500000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WIZF",
+        "frequency": 101100000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WKRQ",
+        "frequency": 101900000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WEBN",
+        "frequency": 102700000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WGRR",
+        "frequency": 103500000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WUBE",
+        "frequency": 105100000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WNKR",
+        "frequency": 106700000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "WKFS",
+        "frequency": 107100000,
+        "modulation": "wfm"
+    },
+    {
+        "name": "KIH42 NOAA",
+        "frequency": 162550000,
+        "modulation": "nfm",
+        "description": "NOAA Weather Radio, Covington"
+    },
+    {
+        "name": "APRS",
+        "frequency": 144390000,
+        "modulation": "packet",
+        "description": "North American APRS"
+    },
+    {
+        "name": "2m calling",
+        "frequency": 146520000,
+        "modulation": "nfm",
+        "description": "National 2 m FM simplex calling"
+    },
+    {
+        "name": "SKYWARN rpt",
+        "frequency": 146880000,
+        "modulation": "nfm",
+        "description": "Cincinnati SKYWARN repeater"
+    },
+    {
+        "name": "NKARC rpt",
+        "frequency": 146790000,
+        "modulation": "nfm",
+        "description": "NKARC net repeater"
+    },
+    {
+        "name": "K4CO rpt",
+        "frequency": 147030000,
+        "modulation": "nfm",
+        "description": "K4CO Edgewood repeater"
+    },
+    {
+        "name": "K4CO rpt",
+        "frequency": 147255000,
+        "modulation": "nfm",
+        "description": "K4CO Edgewood repeater"
+    },
+    {
+        "name": "70cm calling",
+        "frequency": 446000000,
+        "modulation": "nfm",
+        "description": "National 70 cm FM simplex calling"
+    },
+    {
+        "name": "Guard",
+        "frequency": 121500000,
+        "modulation": "am",
+        "description": "Aircraft emergency"
+    },
+    {
+        "name": "Meshtastic",
+        "frequency": 906875000,
+        "modulation": "meshtastic",
+        "description": "Meshtastic US LongFast"
+    }
+]

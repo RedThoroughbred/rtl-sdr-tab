@@ -1,0 +1,22 @@
+{
+  "name": "radio",
+  "version": "0.5.1",
+  "description": "A Radio tab that turns an RTL-SDR Blog V4 on the Mac into one instrument: a live scrolling waterfall under a spectrum with a clickable tuning strip (point to read, click to tune, ← → and Enter) and a tappable station list, a receiver LCD tuner (WFM / NFM / AM / USB / LSB / CW) with station tabs including HF through the V4's built-in upconverter, an S-meter and an EQ display of the sound, a Scanner over favourite channels (stop and play when one opens, resume after the quiet; lock-out, skip, hold, a priority channel; hits feed the logger), ● Rec and a transmission logger (one clip per transmission) with a Recordings list in ~/Radio/Recordings, IQ snapshots (raw I/Q with rtl_sdr to ~/Radio/IQ, a waterfall replayed from the file, rtl_433 on 433.92 snapshots), a Radio settings panel (PPM with a calibrate-from-NOAA helper, bias-tee, filter width per mode, HF status and test), a 24 MHz-1.7 GHz band map around your location (Walton, KY unless a location.json says otherwise), Meshtastic / MeshCore traffic, the gadgets rtl_433 hears, a plane radar (ADS-B 1090), APRS on a map, NOAA weather alerts (SAME) from KIH42, and Web SDR (OpenWebRX+ in Docker) for any browser in a Wildcat RF skin with gapless FM windows and HF profiles (WWV, 40/20 m FT8 and WSPR, SSTV, weather fax, NAVTEX, shortwave bands), Send to Radio tab, the tab's bookmarks, plain-English tooltips and a how-it-works guide, and background APRS / 433 MHz decoding; listen through the Mac, share to a phone app. One owner of the V4: starting anything stops the last thing and says so, and the tab names what is on it. Receive only. /sdr, /sdr scan <band>, /sdr scan list|on|off|add <MHz>, /sdr live on|off [band], /sdr tune <MHz>, /sdr listen <MHz> [mode], /sdr stop, /sdr rec on|off, /sdr rec keep <GB>, /sdr log on|off, /sdr record <MHz> [mode] <sec>, /sdr recordings, /sdr snapshot <MHz> [secs], /sdr snapshots, /sdr settings, /sdr set ppm <N>, /sdr biast on|off, /sdr hf test|confirm, /sdr calibrate, /sdr bands, /sdr mesh, /sdr gadgets [on|off], /sdr share on|off, /sdr planes [on|off], /sdr aprs [on|off], /sdr alerts [on|off|test], /sdr web [on|off|sync]",
+  "author": {
+    "name": "Seth Egger"
+  },
+  "homepage": "https://github.com/RedThoroughbred/rtl-sdr-tab",
+  "repository": "https://github.com/RedThoroughbred/rtl-sdr-tab",
+  "license": "MIT",
+  "keywords": [
+    "rtl-sdr",
+    "sdr",
+    "ham-radio",
+    "ads-b",
+    "aprs",
+    "noaa",
+    "rtl_433",
+    "waterfall",
+    "openwebrx"
+  ]
+}
