@@ -1,6 +1,6 @@
 {
   "name": "rtl-sdr-tab",
-  "description": "A Radio tab for Claude Code: an RTL-SDR Blog V4 as a waterfall, tuner, band map, planes radar, APRS, weather alerts, gadgets nearby and a Web SDR.",
+  "description": "A Radio tab for Claude Code: an RTL-SDR Blog V4 as a waterfall, tuner, band map, planes radar, APRS, weather alerts, gadgets nearby and a Web SDR, with tools and a skill so Claude can read the radio and tune it.",
   "owner": {
     "name": "Seth Egger"
   },
@@ -10,7 +10,7 @@
       "source": "./",
       "category": "productivity",
       "homepage": "https://github.com/RedThoroughbred/rtl-sdr-tab",
-      "description": "A Radio tab that turns an RTL-SDR Blog V4 into one instrument: a live waterfall with a tuning strip, a receiver-style tuner with recording, a band map, a planes radar from ADS-B, APRS, decoded NOAA weather alerts, the gadgets rtl_433 hears nearby, a scanner and a Web SDR. Receive only. /sdr to open it."
+      "description": "A Radio tab that turns an RTL-SDR Blog V4 into one instrument: a live waterfall with a tuning strip, a receiver-style tuner with recording, a band map, a planes radar from ADS-B, APRS, decoded NOAA weather alerts, the gadgets rtl_433 hears nearby, a scanner and a Web SDR. Six tools and a radio-guide skill let Claude read the radio, scan a band, listen and switch the safe jobs. Receive only. /sdr to open it."
     }
   ]
 }
