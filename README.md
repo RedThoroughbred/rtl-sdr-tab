@@ -27,13 +27,13 @@ Out of the box it's set up for my station in Walton, Kentucky. A small location 
 In Claude Code 2.1.275 or later, type:
 
 ```
-/plugin install radio --marketplace RedThoroughbred/rtl-sdr-tab
+/plugin install wildcat-radio --marketplace RedThoroughbred/rtl-sdr-tab
 ```
 
 In the Claude desktop app, `/plugin` opens the app's own plugin settings instead, so run this in a terminal:
 
 ```
-claude plugin install radio --marketplace RedThoroughbred/rtl-sdr-tab
+claude plugin install wildcat-radio --marketplace RedThoroughbred/rtl-sdr-tab
 ```
 
 In a session that's already open, run `/reload-plugins`. Plug in the V4 and type `/sdr`. (Claude Code has its own `/radio`, so this tab's command is `/sdr`.)
@@ -106,6 +106,10 @@ Claude can read the tab's status, the planes and the gadgets, scan a band, liste
 > [!WARNING]
 > This only ever receives. Nothing Claude does here transmits. Web SDR, sharing to a phone, the bias-tee, settings, the HF test and deleting recordings stay in the tab; Claude will say to do those there. Starting a scan, a tune or a job takes the V4 and stops whatever was running, just like the tab's buttons.
 
+## What's new in 0.7.0
+
+- **Renamed for Anthropic's plugin directory:** the plugin is now `wildcat-radio` (shown as Wildcat Radio). The `/sdr` command works as before. If you installed it under the old name, run `claude plugin uninstall radio@rtl-sdr-tab`, then the new install line above, then `/reload-plugins`. Your location, recordings and settings files stay; a few tab preferences, such as colours and toggles, start fresh.
+
 ## What's new in 0.6.0
 
 - **Tools for Claude:** `sdr_status`, `sdr_planes`, `sdr_gadgets`, `sdr_scan`, `sdr_tune` and `sdr_job`.
@@ -116,7 +120,7 @@ Claude can read the tab's status, the planes and the gadgets, scan a band, liste
 
 ```
 claude plugin marketplace update rtl-sdr-tab
-claude plugin update radio@rtl-sdr-tab
+claude plugin update wildcat-radio@rtl-sdr-tab
 ```
 
 Then run `/reload-plugins` in a session that's already open.
@@ -132,7 +136,7 @@ Then run `/reload-plugins` in a session that's already open.
 
 ## Wildcat RF
 
-rtl-sdr-tab is part of Wildcat RF, the radio instruments I build for Claude Code. Its sibling is [nanovna-tab](https://github.com/RedThoroughbred/nanovna-tab), a NanoVNA tab for tuning and testing antennas, in the same instrument look.
+rtl-sdr-tab is part of Wildcat RF, the radio instruments I build for Claude Code. Its sibling is [nanovna-tab](https://github.com/RedThoroughbred/nanovna-tab) (the `wildcat-vna` plugin, Wildcat VNA), a NanoVNA tab for tuning and testing antennas, in the same instrument look.
 
 I built it with Claude Code as my coding partner.
 

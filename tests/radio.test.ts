@@ -8,7 +8,7 @@ import { logOf, radio, SNAP_FILE, start, stored, world, type World } from './wor
 
 const SURFACES = ['terminal', 'desktop', 'vscode', 'mobile'] as const
 const PANE = {
-  plugin: 'radio',
+  plugin: 'wildcat-radio',
   component: 'Pane' as const,
   requestId: 'radio',
   props: { title: 'Radio', isFocused: false, bodyColumns: 100, placement: 'dock' as const, scroll: { offset: 0, bodyRows: 80 }, view: {} },

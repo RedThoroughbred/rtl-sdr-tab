@@ -3,7 +3,7 @@ import { describe, expect, test } from 'claude-code/testing'
 import { GADGETS, STATUS } from './fixture'
 import { STATUS_FREE, STATUS_PLANES, STATUS_WEB } from './fixture-sections'
 import { PLANES_STATE } from './fixture-planes-state'
-import { BAND_IDS } from '../hooks/tools'
+import { BAND_IDS, TOOL_PREFIX } from '../hooks/tools'
 import { logOf, start, world, type World } from './world'
 
 // The six tools Claude can call (hooks/tools.ts), through the same fake world as the tab: radio.py and
@@ -12,7 +12,7 @@ import { logOf, start, world, type World } from './world'
 const NAMES = ['sdr_status', 'sdr_planes', 'sdr_gadgets', 'sdr_scan', 'sdr_tune', 'sdr_job'] as const
 
 async function call($: any, tool: (typeof NAMES)[number], input: Record<string, unknown> = {}): Promise<string> {
-  const r = await $.tool.call({ tool: `mcp__radio__${tool}`, ...input })
+  const r = await $.tool.call({ tool: `${TOOL_PREFIX}${tool}`, ...input })
   return String((r as any).text ?? (r as any).result ?? '')
 }
 

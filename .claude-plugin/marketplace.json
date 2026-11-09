@@ -6,7 +6,7 @@
   },
   "plugins": [
     {
-      "name": "radio",
+      "name": "wildcat-radio",
       "source": "./",
       "category": "productivity",
       "homepage": "https://github.com/RedThoroughbred/rtl-sdr-tab",

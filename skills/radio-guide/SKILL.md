@@ -1,6 +1,6 @@
 ---
 name: radio-guide
-description: Helps the person find and understand what their RTL-SDR V4 is hearing, using the Radio tab's tools (sdr_status, sdr_planes, sdr_gadgets, sdr_scan, sdr_tune, sdr_job). Use whenever they ask "what am I hearing", what is on a frequency, radio or SDR questions, a scanner, FM or NOAA weather radio, airband, planes overhead or ADS-B, APRS or ham radio (2 m, 70 cm), MURS, GMRS or FRS, marine or railroad radio, 433 MHz sensors and gadgets nearby, Meshtastic or LoRa on 915 MHz, or shortwave and HF, even if they never say SDR.
+description: Helps the person find and understand what their RTL-SDR V4 is hearing, using the Radio tab's tools from the wildcat-radio plugin (sdr_status, sdr_planes, sdr_gadgets, sdr_scan, sdr_tune, sdr_job). Use whenever they ask "what am I hearing", what is on a frequency, radio or SDR questions, a scanner, FM or NOAA weather radio, airband, planes overhead or ADS-B, APRS or ham radio (2 m, 70 cm), MURS, GMRS or FRS, marine or railroad radio, 433 MHz sensors and gadgets nearby, Meshtastic or LoRa on 915 MHz, or shortwave and HF, even if they never say SDR.
 ---
 
 # Radio guide

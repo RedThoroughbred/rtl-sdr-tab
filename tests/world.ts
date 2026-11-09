@@ -1,6 +1,7 @@
 import { describe, expect, mock, test } from 'claude-code/testing'
 import type { JsonValue, On } from 'claude-code'
 
+import { TOOL_PREFIX } from '../hooks/tools'
 import { GADGETS, LISTEN_NOAA, LISTEN_WEAK, LIVE_FM, MESH, METER_NOAA, METER_WEAK, SCAN_FM, SCAN_LORA, STATUS } from './fixture'
 import { ALERTS_NONE, ALERTS_WARNING, APRS_HEARD, APRS_NOTHING, PLANES_QUIET, PLANES_VIEW, SAME_TEST, STATUS_FREE, STATUS_PLANES, STATUS_WEB, WEB_STATUS } from './fixture-sections'
 import { EQ_NFM, EQ_WBFM, RECS_TODAY } from './fixture-recordings'
@@ -299,7 +300,7 @@ export function world(on: On, opts: { status?: any; gadgets?: any; gadgetsOn?: b
   on('command.register', async (_$, e) => ({ value: { command: e.name } }))
   on('tool.register', async (_$, e) => {
     w.tools.push(e as any)
-    return { value: { tool: `mcp__radio__${e.name}` } }
+    return { value: { tool: `${TOOL_PREFIX}${e.name}` } }
   })
   on('ui.open', async () => ({ value: { isPlaced: true as const } }))
   on('ui.status', async (_$, e) => {

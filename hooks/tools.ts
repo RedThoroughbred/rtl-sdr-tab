@@ -3,6 +3,9 @@
 // is refused. The calls themselves are answered in register.tsx (the tab's state lives there), so a
 // tool call and a click on the tab go through the very same code, queue and one-program-at-a-time rule.
 
+// Tool names are mcp__<plugin name>__<tool>, with the hyphens of the plugin name kept.
+export const TOOL_PREFIX = 'mcp__wildcat-radio__'
+
 const RECEIVE_ONLY = 'It only ever receives: nothing here can transmit.'
 
 const TAKES_THE_V4 =

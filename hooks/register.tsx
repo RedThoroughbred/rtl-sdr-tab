@@ -1,5 +1,5 @@
 import type { Register } from 'claude-code'
-import { parseJob, parsePlanes, parseScan, parseTune, registerTools } from './tools'
+import { parseJob, parsePlanes, parseScan, parseTune, registerTools, TOOL_PREFIX } from './tools'
 import type { StripGrid, StripMessage, StripPeak, StripProps } from './tuning-strip'
 
 // The Radio tab: an RTL-SDR Blog V4 on the Mac's USB, driven through
@@ -4950,28 +4950,28 @@ async function toolJob($: any, job: 'planes' | 'aprs' | 'alerts' | 'gadgets', wa
 export const register: Register = on => {
   // The six tools (registered at session.start by registerTools): each answers a failure in words.
   // Spelled out one by one: the hook loader wants every on('tool.call', ...) at its own call site.
-  on('tool.call', { tool: 'mcp__radio__sdr_status' }, async $ => {
+  on('tool.call', { tool: `${TOOL_PREFIX}sdr_status` }, async $ => {
     try {
       return { result: await toolWait($, toolStatus($), TOOL_READ_MS, 'Reading the radio') }
     } catch (err: any) {
       return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
     }
   })
-  on('tool.call', { tool: 'mcp__radio__sdr_planes' }, async ($, e) => {
+  on('tool.call', { tool: `${TOOL_PREFIX}sdr_planes` }, async ($, e) => {
     try {
       return { result: await toolWait($, toolPlanes($, parsePlanes(e)), TOOL_READ_MS, 'Reading the planes') }
     } catch (err: any) {
       return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
     }
   })
-  on('tool.call', { tool: 'mcp__radio__sdr_gadgets' }, async $ => {
+  on('tool.call', { tool: `${TOOL_PREFIX}sdr_gadgets` }, async $ => {
     try {
       return { result: await toolWait($, toolGadgets($), TOOL_READ_MS, 'Reading the gadgets') }
     } catch (err: any) {
       return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
     }
   })
-  on('tool.call', { tool: 'mcp__radio__sdr_scan' }, async ($, e) => {
+  on('tool.call', { tool: `${TOOL_PREFIX}sdr_scan` }, async ($, e) => {
     const p = parseScan(e)
     if (!p.ok) return { result: p.say }
     try {
@@ -4980,7 +4980,7 @@ export const register: Register = on => {
       return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
     }
   })
-  on('tool.call', { tool: 'mcp__radio__sdr_tune' }, async ($, e) => {
+  on('tool.call', { tool: `${TOOL_PREFIX}sdr_tune` }, async ($, e) => {
     const p = parseTune(e)
     if (!p.ok) return { result: p.say }
     try {
@@ -4989,7 +4989,7 @@ export const register: Register = on => {
       return { result: `The Radio tool failed: ${String(err?.message ?? err)}` }
     }
   })
-  on('tool.call', { tool: 'mcp__radio__sdr_job' }, async ($, e) => {
+  on('tool.call', { tool: `${TOOL_PREFIX}sdr_job` }, async ($, e) => {
     const p = parseJob(e)
     if (!p.ok) return { result: p.say }
     try {
