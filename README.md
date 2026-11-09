@@ -1,8 +1,14 @@
-<p align="center">
-  <img src="docs/images/banner.png" alt="The Radio tab: the tuner playing 89.1 FM with its audio spectrum, beside the planes radar" width="100%">
-</p>
+<div align="center">
 
-<p align="center"><img src=".claude-plugin/icon.png" alt="rtl-sdr-tab icon: a spectrum with glowing peaks over a waterfall" width="112"></p>
+![The Radio tab: the tuner playing 89.1 FM with its audio spectrum, beside the planes radar](docs/images/banner.png)
+
+</div>
+
+<div align="center">
+
+![rtl-sdr-tab icon: a spectrum with glowing peaks over a waterfall](docs/images/icon-112.png)
+
+</div>
 
 <h1 align="center">rtl-sdr-tab</h1>
 
@@ -11,12 +17,11 @@
   Plug an RTL-SDR Blog V4 into your Mac, type <code>/sdr</code>, and hear and see the radio world around you: FM and weather radio, the planes overhead, ham stations, weather alerts and the little sensors on your street.
 </p>
 
-<p align="center">
-  <img alt="Claude Code plugin" src="docs/badges/claude-code.svg">
-  <img alt="RTL-SDR Blog V4" src="docs/badges/rtl-sdr.svg">
-  <img alt="macOS over USB" src="docs/badges/macos.svg">
-  <a href="LICENSE"><img alt="MIT license" src="docs/badges/license.svg"></a>
-</p>
+<div align="center">
+
+![Claude Code plugin](docs/badges/claude-code.svg) ![RTL-SDR Blog V4](docs/badges/rtl-sdr.svg) ![macOS over USB](docs/badges/macos.svg) [![MIT license](docs/badges/license.svg)](LICENSE)
+
+</div>
 
 The RTL-SDR Blog V4 is a small USB dongle that can hear almost everything from shortwave up to 1.7 GHz. I wanted it to be one instrument, right beside my code, that explains what it hears while I use it. So I built this tab. It only receives; nothing here transmits.
 
@@ -51,35 +56,59 @@ In a session that's already open, run `/reload-plugins`. Plug in the V4 and type
 
 ### Start here and the tuner
 
-<p align="center"><img src="docs/images/start.png" alt="Start here: seven buttons, each doing one thing, and what the V4 is doing now: playing 89.1 WKCX" width="727"></p>
+<div align="center">
+
+![Start here: seven buttons, each doing one thing, and what the V4 is doing now: playing 89.1 WKCX](docs/images/start.png)
+
+</div>
 
 Seven buttons that each do one thing: hear the weather radio, play an FM station, watch the FM band live, see the planes overhead, open the Web SDR, check the gadgets nearby, and record what you hear. The V4 does one thing at a time, and the tab always says what it's doing.
 
-<p align="center"><img src="docs/images/tuner.png" alt="The tuner: 89.100 MHz on a seven-segment display, an S-meter, and an audio spectrum of the sound" width="727"></p>
+<div align="center">
+
+![The tuner: 89.100 MHz on a seven-segment display, an S-meter, and an audio spectrum of the sound](docs/images/tuner.png)
+
+</div>
 
 A receiver-style tuner with an S-meter and, under it, a spectrum of the sound itself. WFM, NFM, AM, USB, LSB and CW, station tabs, favourites, ● Rec, and a log that saves each transmission as a clip.
 
 ### The radio world around you
 
-<p align="center"><img src="docs/images/world.png" alt="The band map from 24 MHz to 1.7 GHz, with close-ups of the VHF and UHF bands and a button for each band" width="727"></p>
+<div align="center">
+
+![The band map from 24 MHz to 1.7 GHz, with close-ups of the VHF and UHF bands and a button for each band](docs/images/world.png)
+
+</div>
 
 A band map from 24 MHz to 1.7 GHz that shows what each band's last scan heard, with close-ups of VHF and UHF. Each button under it scans that band in about ten seconds.
 
 ### The FM band, live
 
-<p align="center"><img src="docs/images/fm-band.png" alt="The FM band: a labelled spectrum, a scrolling waterfall, and the list of stations by frequency" width="727"></p>
+<div align="center">
+
+![The FM band: a labelled spectrum, a scrolling waterfall, and the list of stations by frequency](docs/images/fm-band.png)
+
+</div>
 
 Every station labelled on a spectrum, a scrolling waterfall under it, and the station list. Click the strip under the waterfall to tune there.
 
 ### Planes overhead
 
-<p align="center"><img src="docs/images/adsb.png" alt="The ADS-B radar: aircraft around the station with their flight, altitude and speed, and a table of traffic" width="727"></p>
+<div align="center">
+
+![The ADS-B radar: aircraft around the station with their flight, altitude and speed, and a table of traffic](docs/images/adsb.png)
+
+</div>
 
 A radar of the aircraft around you, from the ADS-B broadcasts they send on 1090 MHz: each flight's altitude, speed and the trail of its last few minutes, coloured by height.
 
 ### Gadgets nearby
 
-<p align="center"><img src="docs/images/gadgets.png" alt="Gadgets nearby: weather sensors with sparklines of their readings and a tire-pressure sensor reading 33 psi" width="727"></p>
+<div align="center">
+
+![Gadgets nearby: weather sensors with sparklines of their readings and a tire-pressure sensor reading 33 psi](docs/images/gadgets.png)
+
+</div>
 
 Everything `rtl_433` hears on 433.92 MHz: weather stations, soil sensors, doorbells, and even the tire-pressure sensors in passing cars, with sparklines of their readings. I covered the sensor IDs in this picture. A tire sensor's ID never changes, so it can identify a car.
 
