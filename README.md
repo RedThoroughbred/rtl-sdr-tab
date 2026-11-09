@@ -163,6 +163,17 @@ Then run `/reload-plugins` in a session that's already open.
 
 [The details](docs/details.md) cover every section, command and file, and how to set your location.
 
+## What it runs and sends
+
+- **Programs it starts:** `python3` on the plugin's own scripts (`scripts/radio.py`, `adsb.py`, `digital.py`, `location.py`, all standard library only), and from them the Homebrew tools: `rtl_fm`, `rtl_power`, `rtl_adsb`, `rtl_sdr`, `rtl_tcp`, `rtl_biast` and `rtl_433`, plus `ffmpeg` (recording, and `ffplay` to play it back) and `play` or `ffplay` to put the audio on the speakers. The ADS-B, APRS and weather-alert (SAME) decoders are the scripts' own Python code (`multimon-ng` is used for APRS if you have installed it). Web SDR also runs `docker`. `/usr/bin/open` shows a recording in Finder and starts Docker Desktop for Web SDR. Nothing is installed for you.
+- **It only receives.** Nothing here transmits. Jobs run only while you or Claude turn them on, and the V4 does one thing at a time.
+- **Files it writes:** state, the latest scans, the aircraft, APRS and alert history and the gadget log in `~/Library/Application Support/radio`; a lock and the Web SDR pids and logs in `~/Library/Caches/radio`; recordings and clips in `~/Radio/Recordings` and IQ snapshots in `~/Radio/IQ`; and Web SDR's settings, bookmarks and user list in `~/Library/Application Support/radio/openwebrx` (unless you point it elsewhere). Old recordings are pruned by the caps in the settings. Gadget sensor IDs stay on your Mac and are never shown to Claude.
+- **Network ports, only when you ask:**
+  - **Share to phone** starts `rtl_tcp` on port 1234. By default it listens on all of the Mac's network addresses (the home Wi-Fi and Tailscale if present), and `rtl_tcp` has no password, so anyone who can reach that address can use the V4 until you press Stop. The tab can also limit it to the LAN or to Tailscale.
+  - **Web SDR** runs OpenWebRX+ in Docker. When you start it, Docker pulls the pinned image `slechev/openwebrxplus:1.2.126` (from Docker Hub) if it isn't on the Mac yet, and starts Docker Desktop if it is not running. The V4 stays on the Mac: `rtl_tcp` is bound to 127.0.0.1:1234 only. The Web SDR page is on port 8073 at 127.0.0.1 and at the Mac's LAN address, so other devices on your network can open it; a small "send to Radio tab" endpoint on port 8074 listens on the same addresses. The admin password is made on first start and kept in the macOS Keychain (item `openwebrx-wildcat`). The tab shows the `tailscale serve` command for reaching it away from home but does not run it.
+  - Otherwise nothing listens, and nothing is opened to the internet.
+- **Nothing is sent to any server by the plugin itself.** The scripts make no web requests (the only one is a local check that the Web SDR page is up, on 127.0.0.1). Radio data is read off the air on your own antenna. What Claude reads through the six tools becomes part of your conversation like any other tool result; gadget sensor IDs are never included.
+
 ## Wildcat RF
 
 rtl-sdr-tab is part of Wildcat RF, the radio instruments I build for Claude Code. Its sibling is [nanovna-tab](https://github.com/RedThoroughbred/nanovna-tab) (the `wildcat-vna` plugin, Wildcat VNA), a NanoVNA tab for tuning and testing antennas, in the same instrument look.
